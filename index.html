@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alcohol Habit Control App Prototype - Apple Minimalist Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-apple: #ffffff;
+            --secondary-bg-apple: #f5f5f7;
+            --text-apple-main: #000000;
+            --text-apple-secondary: #86868b;
+            --border-apple: #d2d2d7;
+            --accent-apple: #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            color: var(--text-apple-main);
+        }
+
+        /* Sidebar Console */
+        .sidebar {
+            width: 340px;
+            background-color: #ffffff;
+            border-right: 1px solid var(--border-apple);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .sidebar h3 {
+            font-size: 0.8rem;
+            color: var(--text-apple-secondary);
+            margin-top: 16px;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .lang-toggle-container {
+            background: var(--secondary-bg-apple);
+            padding: 4px;
+            border-radius: 8px;
+            display: flex;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .lang-btn {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 6px;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .lang-btn.active {
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-weight: 600;
+        }
+
+        .nav-btn {
+            background-color: transparent;
+            color: var(--text-apple-main);
+            border: 1px solid var(--border-apple);
+            padding: 10px 14px;
+            text-align: left;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--secondary-bg-apple);
+        }
+
+        .nav-btn.active {
+            background-color: var(--text-apple-main);
+            color: #ffffff;
+            border-color: var(--text-apple-main);
+        }
+
+        .nav-btn span {
+            font-size: 0.75rem;
+            opacity: 0.6;
+        }
+
+        /* Simulator Workspace */
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f7;
+            position: relative;
+        }
+
+        /* Premium Hardware Look Frame */
+        .phone-container {
+            width: 375px;
+            height: 780px;
+            background-color: #ffffff;
+            border: 12px solid #000000;
+            border-radius: 48px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            height: 36px;
+            background-color: transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            z-index: 10;
+        }
+
+        .status-bar .icons {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        /* Viewport Container */
+        .screen-view {
+            flex: 1;
+            position: relative;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Screens */
+        .screen {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 24px;
+            background: #ffffff;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Typography */
+        h2.apple-heading {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+
+        p.apple-sub {
+            font-size: 0.95rem;
+            color: var(--text-apple-secondary);
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        .btn-apple {
+            background-color: var(--text-apple-main);
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            margin-top: auto;
+            transition: opacity 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-apple:hover {
+            opacity: 0.9;
+        }
+
+        .btn-apple-secondary {
+            background-color: var(--secondary-bg-apple);
+            color: var(--text-apple-main);
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            transition: background-color 0.2s;
+            text-decoration: none;
+        }
+
+        /* Apple Blur Navigation Bar */
+        .app-nav-bar {
+            height: 68px;
+            border-top: 1px solid #e2e2e7;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            padding-bottom: 8px;
+        }
+
+        .app-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.65rem;
+            color: var(--text-apple-secondary);
+            cursor: pointer;
+            flex: 1;
+            font-weight: 500;
+            gap: 3px;
+        }
+
+        .app-nav-item.active {
+            color: var(--text-apple-main);
+            font-weight: 600;
+        }
+
+        .app-nav-item i {
+            font-size: 1.15rem;
+        }
+
+        .app-nav-item.center-plus i {
+            font-size: 1.5rem;
+            color: var(--text-apple-main);
+        }
+
+        /* Minimal Card Style */
+        .apple-card {
+            background: #ffffff;
+            border: 1px solid var(--border-apple);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 12px;
+            width: 100%;
+        }
+
+        /* 1. Splash */
+        #screen-splash {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .splash-icon {
+            font-size: 3.5rem;
+            margin-bottom: 24px;
+            font-weight: 300;
+        }
+
+        /* 2. Onboarding */
+        #screen-onboarding {
+            justify-content: space-between;
+        }
+
+        /* Form Controls */
+        .apple-input-group {
+            margin-bottom: 12px;
+            width: 100%;
+        }
+        .apple-input-group input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border-apple);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background-color: var(--secondary-bg-apple);
+            transition: border-color 0.2s;
+        }
+        .apple-input-group input:focus {
+            outline: none;
+            border-color: var(--text-apple-main);
+        }
+        .social-container {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 24px;
+            font-size: 1.4rem;
+        }
+
+        /* Goal Picker */
+        .apple-picker {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 32px;
+            margin: 48px 0;
+        }
+        .picker-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid var(--border-apple);
+            background: transparent;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .picker-btn:hover {
+            background: var(--secondary-bg-apple);
+        }
+
+        /* Deposit Chips */
+        .chip-group {
+            display: flex;
+            gap: 8px;
+            margin: 24px 0;
+        }
+        .apple-chip {
+            flex: 1;
+            padding: 12px 6px;
+            border: 1px solid var(--border-apple);
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .apple-chip.active {
+            background-color: var(--text-apple-main);
+            color: #ffffff;
+            border-color: var(--text-apple-main);
+        }
+
+        /* Day Track Strip */
+        .week-strip {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 14px;
+        }
+        .day-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--border-apple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: var(--text-apple-secondary);
+        }
+        .day-dot.filled {
+            background-color: var(--text-apple-main);
+            color: #ffffff;
+            border-color: var(--text-apple-main);
+        }
+
+        /* Progress Screen Layout Details */
+        .progress-stats-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .stat-mini-card {
+            flex: 1;
+            background: var(--secondary-bg-apple);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: left;
+        }
+        .stat-mini-card .num {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .stat-mini-card .lbl {
+            font-size: 0.7rem;
+            color: var(--text-apple-secondary);
+        }
+        .minimal-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 110px;
+            margin-top: 16px;
+            padding-top: 10px;
+            border-bottom: 1px solid var(--border-apple);
+        }
+        .chart-column-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+        .chart-bar-minimal {
+            width: 14px;
+            background-color: var(--border-apple);
+            border-radius: 2px 2px 0 0;
+            transition: height 0.3s;
+        }
+        .chart-bar-minimal.active {
+            background-color: var(--text-apple-main);
+        }
+        .chart-label {
+            font-size: 0.6rem;
+            color: var(--text-apple-secondary);
+            margin-top: 4px;
+        }
+
+        /* Log Screen Components */
+        .binary-group {
+            display: flex;
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .binary-btn {
+            flex: 1;
+            padding: 14px;
+            border: 1px solid var(--border-apple);
+            border-radius: 10px;
+            background: transparent;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .binary-btn.active {
+            background-color: var(--text-apple-main);
+            color: #ffffff;
+            border-color: var(--text-apple-main);
+        }
+        .apple-textarea {
+            width: 100%;
+            height: 70px;
+            border: 1px solid var(--border-apple);
+            border-radius: 10px;
+            padding: 12px;
+            background-color: var(--secondary-bg-apple);
+            resize: none;
+            font-size: 0.9rem;
+            margin-top: 6px;
+        }
+
+        /* Watch Link Box */
+        .watch-link-box {
+            border: 1px dashed var(--border-apple);
+            border-radius: 16px;
+            padding: 32px 16px;
+            text-align: center;
+            margin: 24px 0;
+            background: var(--secondary-bg-apple);
+        }
+        .watch-graphic {
+            font-size: 4.5rem;
+            color: var(--text-apple-main);
+            margin-bottom: 12px;
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Simulated Apple Watch Haptic UI Overlay */
+        .watch-overlay-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.92);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .apple-watch-device {
+            width: 190px;
+            height: 230px;
+            background: #000000;
+            border-radius: 36px;
+            padding: 16px;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 3px solid #2c2c2e;
+        }
+        .watch-top-icon {
+            font-size: 1.4rem;
+            color: #ffffff;
+        }
+
+        /* System Switch Elements */
+        .apple-switch-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--secondary-bg-apple);
+        }
+        .apple-switch {
+            width: 44px;
+            height: 24px;
+            background-color: var(--border-apple);
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+        }
+        .apple-switch.on {
+            background-color: var(--text-apple-main);
+        }
+        .apple-switch::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s;
+        }
+        .apple-switch.on::after {
+            transform: translateX(20px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Language / 言語選択</h2>
+        <div class="lang-toggle-container">
+            <button class="lang-btn active" id="btn-lang-en" onclick="setLanguage('en')">English</button>
+            <button class="lang-btn" id="btn-lang-ja" onclick="setLanguage('ja')">日本語</button>
+        </div>
+
+        <h2>Flow Controller</h2>
+        
+        <h3>Initial Setup Flow</h3>
+        <button class="nav-btn active" id="sidebar-btn-splash" onclick="switchScreen('splash', this)">1. Splash Screen <span>1</span></button>
+        <button class="nav-btn" id="sidebar-btn-onboarding" onclick="switchScreen('onboarding', this)">2. Onboarding <span>2</span></button>
+        <button class="nav-btn" id="sidebar-btn-login" onclick="switchScreen('login', this)">3. Login / Sign Up <span>3</span></button>
+        <button class="nav-btn" id="sidebar-btn-goal" onclick="switchScreen('goal', this)">4. Set Goal <span>4</span></button>
+        <button class="nav-btn" id="sidebar-btn-deposit" onclick="switchScreen('deposit', this)">5. Deposit Money <span>5</span></button>
+        <button class="nav-btn" id="sidebar-btn-connect" onclick="switchScreen('connect', this)">6. Connect Device <span>6</span></button>
+        
+        <h3>Core Application</h3>
+        <button class="nav-btn" id="sidebar-btn-dashboard" onclick="switchScreen('dashboard', this)">7. Home Dashboard <span>7</span></button>
+        <button class="nav-btn" id="sidebar-btn-progress" onclick="switchScreen('progress', this)">8. Detailed Progress <span>8</span></button>
+        <button class="nav-btn" id="sidebar-btn-log" onclick="switchScreen('log', this)">9. Daily Log Drink <span>9</span></button>
+        <button class="nav-btn" id="sidebar-btn-reminder" onclick="switchScreen('reminder', this)">10. Reminder Setup <span>10</span></button>
+        <button class="nav-btn" id="sidebar-btn-rewards" onclick="switchScreen('rewards', this)">12. Rewards Vault <span>12</span></button>
+        <button class="nav-btn" id="sidebar-btn-achievement" onclick="switchScreen('achievement', this)">13. Achievement <span>13</span></button>
+        <button class="nav-btn" id="sidebar-btn-profile" onclick="switchScreen('profile', this)">11. Profile & Settings <span>11</span></button>
+
+        <h3>Hardware Action</h3>
+        <button class="nav-btn" style="background: var(--secondary-bg-apple); font-weight:600;" onclick="toggleWatchOverlay()">
+            <span>Simulate Watch Alert</span> <i class="fas fa-apple-watch"></i>
+        </button>
+    </div>
+
+    <div class="main-content">
+        <div class="phone-container">
+            <div class="status-bar">
+                <span id="live-time">09:41</span>
+                <div class="icons">
+                    <i class="fas fa-signal"></i>
+                    <i class="fas fa-wifi"></i>
+                    <i class="fas fa-battery-full"></i>
+                </div>
+            </div>
+
+            <div class="screen-view">
+                
+                <div id="screen-splash" class="screen active">
+                    <div class="splash-icon"><i class="fas fa-compress"></i></div>
+                    <h2 class="apple-heading" data-en="Drink Less,<br>Live More." data-ja="お酒を減らして、<br>もっと豊かな人生を。">Drink Less,<br>Live More.</h2>
+                    <button class="btn-apple" onclick="navigate('onboarding')">Get Started</button>
+                </div>
+
+                <div id="screen-onboarding" class="screen">
+                    <div>
+                        <div style="font-size: 2.5rem; margin: 32px 0 16px 0;"><i class="fas fa-sliders-h"></i></div>
+                        <h2 class="apple-heading" data-en="Take control of your drinking." data-ja="飲酒習慣を、みずからコントロール。">Take control of your drinking.</h2>
+                        <p class="apple-sub" style="margin-top:12px;" data-en="Build a better you through continuous clear habits and balanced performance milestones." data-ja="一貫した透明性のある習慣設計と、バランスの取れたマイルストーンを積み重ねて、理想の自分を形作ります。">Build a better you through continuous clear habits and balanced performance milestones.</p>
+                    </div>
+                    <button class="btn-apple" onclick="navigate('login')">Continue</button>
+                </div>
+
+                <div id="screen-login" class="screen">
+                    <h2 class="apple-heading" style="margin-bottom:24px;" data-en="Welcome Back" data-ja="おかえりなさい">Welcome Back</h2>
+                    <div class="apple-input-group"><input type="email" value="apple.minimalist@icloud.com" placeholder="Email"></div>
+                    <div class="apple-input-group"><input type="password" value="••••••••••••" placeholder="Password"></div>
+                    <button class="btn-apple" style="margin-top: 8px;" onclick="navigate('goal')">Sign In</button>
+                    <div class="social-container">
+                        <i class="fab fa-apple"></i>
+                        <i class="fab fa-google" style="color: #000;"></i>
+                        <i class="far fa-envelope"></i>
+                    </div>
+                </div>
+
+                <div id="screen-goal" class="screen">
+                    <h2 class="apple-heading" data-en="Set your weekly goal" data-ja="週間目標の設定">Set your weekly goal</h2>
+                    <p class="apple-sub" data-en="Select target number of alcohol-free days inside each week loop." data-ja="1週間の中で、お酒を飲まない目標日数を設定してください。">Select target number of alcohol-free days inside each week loop.</p>
+                    <div class="apple-picker">
+                        <button class="picker-btn" onclick="adjustGoalCount(-1)">−</button>
+                        <span id="current-goal-num" style="font-size: 3.5rem; font-weight: 700; letter-spacing: -0.05em;">3</span>
+                        <button class="picker-btn" onclick="adjustGoalCount(1)">+</button>
+                    </div>
+                    <p style="text-align: center; font-size: 0.9rem; font-weight:500; color: var(--text-apple-secondary);" data-en="Days per week" data-ja="日数 / 週">Days per week</p>
+                    <button class="btn-apple" onclick="navigate('deposit')">Next</button>
+                </div>
+
+                <div id="screen-deposit" class="screen">
+                    <h2 class="apple-heading" data-en="Commit a Deposit" data-ja="継続のためのデポジット">Commit a Deposit</h2>
+                    <p class="apple-sub" data-en="Secure your accountability fund. Reaching goals fully unlocks refunds." data-ja="目標達成への意志を証明するための資金です。達成時に全額返金されます。">Secure your accountability fund. Reaching goals fully unlocks refunds.</p>
+                    <h1 style="text-align: center; font-size: 3rem; font-weight: 700; margin: 32px 0; letter-spacing: -0.03em;">¥ <span id="deposit-display-val">3,000</span></h1>
+                    <div class="chip-group">
+                        <div class="apple-chip" onclick="changeDepositAmount(1000)">¥1,000</div>
+                        <div class="apple-chip active" onclick="changeDepositAmount(3000)">¥3,000</div>
+                        <div class="apple-chip" onclick="changeDepositAmount(5000)">¥5,000</div>
+                    </div>
+                    <button class="btn-apple" onclick="navigate('connect')">Confirm</button>
+                </div>
+
+                <div id="screen-connect" class="screen">
+                    <h2 class="apple-heading" data-en="Connect Watch" data-ja="スマートウォッチ連携">Connect Watch</h2>
+                    <p class="apple-sub" data-en="Sync with your wearable device to trigger immediate haptic loop reminders and background tracking updates." data-ja="ウェアラブルデバイスと同期して、触覚によるリマインダー通知やバックグラウンドでの自动記録を有効にします。">Sync with your wearable device to trigger immediate haptic loop reminders and background tracking updates.</p>
+                    
+                    <div class="watch-link-box">
+                        <div class="watch-graphic">
+                            <i class="fas fa-apple-watch"></i>
+                        </div>
+                        <p style="font-size:0.95rem; font-weight:600;" data-en="Apple Watch Series" data-ja="Apple Watch シリーズ">Apple Watch Series</p>
+                        <p style="font-size:0.8rem; color: var(--text-apple-secondary); margin-top:4px;" data-en="Ready to connect" data-ja="ペアリング準備完了">Ready to connect</p>
+                    </div>
+
+                    <button class="btn-apple" onclick="navigate('dashboard')">Pair Device Now</button>
+                    <button class="btn-apple-secondary" style="margin-top:8px;" onclick="navigate('dashboard')" data-en="Skip for now" data-ja="後で設定する">Skip for now</button>
+                </div>
+
+                <div id="screen-dashboard" class="screen">
+                    <p style="font-size:0.85rem; font-weight:600; color: var(--text-apple-secondary);" data-en="HELLO, USER" data-ja="こんにちは、ユーザー様">HELLO, USER</p>
+                    <h2 class="apple-heading" style="margin-bottom:16px;" data-en="Today is Clear." data-ja="本日は休肝日です。">Today is Clear.</h2>
+                    
+                    <div class="apple-card">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                            <span style="font-size:0.9rem; font-weight:600;" data-en="Weekly Summary" data-ja="今週の達成状況">Weekly Summary</span>
+                            <span style="font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em;">2 / 3</span>
+                        </div>
+                        <p style="font-size:0.75rem; color: var(--text-apple-secondary); margin-top:2px;" data-en="Alcohol-free milestones completed" data-ja="休肝日の目標達成度">Alcohol-free milestones completed</p>
+                        <div class="week-strip">
+                            <div class="day-dot filled">M</div>
+                            <div class="day-dot filled">T</div>
+                            <div class="day-dot">W</div>
+                            <div class="day-dot">T</div>
+                            <div class="day-dot">F</div>
+                            <div class="day-dot">S</div>
+                            <div class="day-dot">S</div>
+                        </div>
+                    </div>
+
+                    <div class="apple-card" style="display: flex; justify-content: space-between; align-items: center; cursor:pointer;" onclick="navigate('rewards')">
+                        <div>
+                            <p style="font-size: 0.75rem; color: var(--text-apple-secondary);" data-en="Active Escrow Balance" data-ja="現在のデポジット残高">Active Escrow Balance</p>
+                            <h3 style="font-size:1.3rem; font-weight:700; margin-top:2px;">¥ 3,000</h3>
+                        </div>
+                        <i class="fas fa-chevron-right" style="font-size: 0.8rem; color: var(--border-apple);"></i>
+                    </div>
+
+                    <div class="app-nav-bar" style="margin-top:auto; margin-left:-24px; margin-right:-24px; margin-bottom:-24px;">
+                        <div class="app-nav-item active" onclick="navigate('dashboard')"><i class="fas fa-house"></i><span data-en="Home" data-ja="ホーム">Home</span></div>
+                        <div class="app-nav-item" onclick="navigate('progress')"><i class="fas fa-chart-bar"></i><span data-en="Progress" data-ja="分析">Progress</span></div>
+                        <div class="app-nav-item center-plus" onclick="navigate('log')"><i class="fas fa-plus-circle"></i></div>
+                        <div class="app-nav-item" onclick="navigate('rewards')"><i class="fas fa-wallet"></i><span data-en="Rewards" data-ja="リワード">Rewards</span></div>
+                        <div class="app-nav-item" onclick="navigate('profile')"><i class="fas fa-user"></i><span data-en="Profile" data-ja="マイページ">Profile</span></div>
+                    </div>
+                </div>
+
+                <div id="screen-progress" class="screen">
+                    <h2 class="apple-heading" style="margin-bottom:4px;" data-en="Analytics" data-ja="統計・分析">Analytics</h2>
+                    <p class="apple-sub" style="margin-bottom:16px;" data-en="Detailed evaluation of habit patterns." data-ja="休肝習慣の推移と詳細データ。">Detailed evaluation of habit patterns.</p>
+                    
+                    <div class="progress-stats-row">
+                        <div class="stat-mini-card">
+                            <div class="lbl" data-en="Current Streak" data-ja="現在の継続日数">Current Streak</div>
+                            <div class="num">12 <span style="font-size:0.75rem; font-weight:500;">days</span></div>
+                        </div>
+                        <div class="stat-mini-card">
+                            <div class="lbl" data-en="Success Rate" data-ja="目標達成率">Success Rate</div>
+                            <div class="num">88.4%</div>
+                        </div>
+                    </div>
+
+                    <div class="apple-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size:0.85rem; font-weight:600;" data-en="Last 4 Weeks Breakdown" data-ja="過去4週間の推移">Last 4 Weeks Breakdown</span>
+                            <span style="font-size:0.75rem; color: var(--text-apple-secondary);">Target: 3d/wk</span>
+                        </div>
+                        <div class="minimal-chart">
+                            <div class="chart-column-wrapper">
+                                <div class="chart-bar-minimal active" style="height: 90px;"></div>
+                                <div class="chart-label">W1</div>
+                            </div>
+                            <div class="chart-column-wrapper">
+                                <div class="chart-bar-minimal active" style="height: 90px;"></div>
+                                <div class="chart-label">W2</div>
+                            </div>
+                            <div class="chart-column-wrapper">
+                                <div class="chart-bar-minimal" style="height: 60px;"></div>
+                                <div class="chart-label">W3</div>
+                            </div>
+                            <div class="chart-column-wrapper">
+                                <div class="chart-bar-minimal active" style="height:100px;"></div>
+                                <div class="chart-label">W4 (Now)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="apple-card" style="padding:12px 16px;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-apple-secondary);">
+                            <span data-en="Total Dry Days Saved" data-ja="累計休肝日数">Total Dry Days Saved</span>
+                            <span style="color:var(--text-apple-main); font-weight:600;">34 Days</span>
+                        </div>
+                    </div>
+
+                    <div class="app-nav-bar" style="margin-top:auto; margin-left:-24px; margin-right:-24px; margin-bottom:-24px;">
+                        <div class="app-nav-item" onclick="navigate('dashboard')"><i class="fas fa-house"></i><span data-en="Home" data-ja="ホーム">Home</span></div>
+                        <div class="app-nav-item active" onclick="navigate('progress')"><i class="fas fa-chart-bar"></i><span data-en="Progress" data-ja="分析">Progress</span></div>
+                        <div class="app-nav-item center-plus" onclick="navigate('log')"><i class="fas fa-plus-circle"></i></div>
+                        <div class="app-nav-item" onclick="navigate('rewards')"><i class="fas fa-wallet"></i><span data-en="Rewards" data-ja="リワード">Rewards</span></div>
+                        <div class="app-nav-item" onclick="navigate('profile')"><i class="fas fa-user"></i><span data-en="Profile" data-ja="マイページ">Profile</span></div>
+                    </div>
+                </div>
+
+                <div id="screen-log" class="screen">
+                    <h2 class="apple-heading" data-en="Log Activity" data-ja="本日の記録">Log Activity</h2>
+                    <p class="apple-sub" data-en="Did you consume alcohol today?" data-ja="今日はお酒を飲みましたか？">Did you consume alcohol today?</p>
+                    
+                    <div class="binary-group">
+                        <button class="binary-btn" id="log-yes" onclick="setLogStatus(true)" data-en="Yes, I did" data-ja="はい、飲んだ">Yes, I did</button>
+                        <button class="binary-btn active" id="log-no" onclick="setLogStatus(false)" data-en="No alcohol" data-ja="いいえ、飲んでいない">No alcohol</button>
+                    </div>
+
+                    <p style="font-size:0.9rem; font-weight:600; margin-top:16px;" data-en="Current State or Mood" data-ja="現在の気分・体調">Current State or Mood</p>
+                    <div style="display:flex; justify-content:space-between; font-size:1.6rem; margin:12px 0; padding:0 8px;">
+                        <span>⚫</span><span>⚪</span><span>◼</span><span>◻</span>
+                    </div>
+
+                    <p style="font-size:0.9rem; font-weight:600; margin-top:16px;" data-en="Notes" data-ja="メモ (任意)">Notes</p>
+                    <textarea class="apple-textarea" placeholder="..." data-en="Optional context..." data-ja="体調の変化などを記録..."></textarea>
+
+                    <button class="btn-apple" style="margin-top:20px;" onclick="navigate('achievement')">Save Log</button>
+                </div>
+
+                <div id="screen-reminder" class="screen">
+                    <h2 class="apple-heading" data-en="Reminders" data-ja="通知リマインダー">Reminders</h2>
+                    <p class="apple-sub" data-en="Configure precise automated checkpoints." data-ja="通知タイミングとスマートウォッチ同期設定。">Configure precise automated checkpoints.</p>
+                    
+                    <div style="margin-top:24px;">
+                        <div class="apple-switch-row">
+                            <span style="font-size:0.95rem; font-weight:500;" data-en="Smartwatch Haptic Push" data-ja="ウォッチへの振動通知">Smartwatch Haptic Push</span>
+                            <div class="apple-switch on" onclick="this.classList.toggle('on')"></div>
+                        </div>
+                        <div class="apple-switch-row">
+                            <span style="font-size:0.95rem; font-weight:500;" data-en="Daily Evening Prompt" data-ja="夜間の定期リマインダー">Daily Evening Prompt</span>
+                            <div class="apple-switch on" onclick="this.classList.toggle('on')"></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:20px;">
+                        <label style="font-size:0.8rem; color:var(--text-apple-secondary); font-weight:500;" data-en="TRIGGER TIME" data-ja="通知時間">TRIGGER TIME</label>
+                        <select style="width:100%; padding:14px; margin-top:6px; border-radius:10px; border:1px solid var(--border-apple); background:var(--secondary-bg-apple); font-size:1rem; font-weight:500;"><option>09:00 PM</option><option>10:00 PM</option></select>
+                    </div>
+
+                    <button class="btn-apple" onclick="navigate('dashboard')">Save Configurations</button>
+                </div>
+
+                <div id="screen-rewards" class="screen">
+                    <h2 class="apple-heading" data-en="Vault & Rewards" data-ja="リワード・安全資産残高">Vault & Rewards</h2>
+                    
+                    <div class="apple-card" style="text-align: center; margin-top:16px; background-color: var(--secondary-bg-apple); border:none;">
+                        <p style="font-size:0.8rem; color:var(--text-apple-secondary);" data-en="Escrow Balance" data-ja="現在の保護デポジット">Escrow Balance</p>
+                        <h2 style="font-size:2.2rem; font-weight:700; margin-top:4px; letter-spacing:-0.03em;">¥ 3,000</h2>
+                    </div>
+
+                    <div class="apple-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size:0.9rem; font-weight:600;" data-en="Projected Bonus Cash" data-ja="見込みボーナス報酬">Projected Bonus Cash</span>
+                            <span style="font-weight:700; color:var(--text-apple-main);">+¥500</span>
+                        </div>
+                        <p class="apple-sub" style="font-size:0.75rem; margin-top:4px;" data-en="Distributed automatically upon perfect completion of the active habit cycle." data-ja="現在の習慣サイクルを完全に達成した場合に自動付与されます。">Distributed automatically upon perfect completion of the active habit cycle.</p>
+                    </div>
+
+                    <div class="app-nav-bar" style="margin-top:auto; margin-left:-24px; margin-right:-24px; margin-bottom:-24px;">
+                        <div class="app-nav-item" onclick="navigate('dashboard')"><i class="fas fa-house"></i><span data-en="Home" data-ja="ホーム">Home</span></div>
+                        <div class="app-nav-item" onclick="navigate('progress')"><i class="fas fa-chart-bar"></i><span data-en="Progress" data-ja="分析">Progress</span></div>
+                        <div class="app-nav-item center-plus" onclick="navigate('log')"><i class="fas fa-plus-circle"></i></div>
+                        <div class="app-nav-item" onclick="navigate('rewards')"><i class="fas fa-wallet"></i><span data-en="Rewards" data-ja="リワード">Rewards</span></div>
+                        <div class="app-nav-item" onclick="navigate('profile')"><i class="fas fa-user"></i><span data-en="Profile" data-ja="マイページ">Profile</span></div>
+                    </div>
+                </div>
+
+                <div id="screen-achievement" class="screen" style="justify-content: center; text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom:16px;"><i class="fas fa-circle-notch fa-spin"></i></div>
+                    <h2 class="apple-heading" data-en="Goal Achieved" data-ja="目標を達成しました">Goal Achieved</h2>
+                    <p class="apple-sub" data-en="Consistent system compliance unlocked your metrics successfully." data-ja="一貫した自己管理により、今サイクルのマイルストーンをクリアしました。">Consistent system compliance unlocked your metrics successfully.</p>
+                    
+                    <div class="apple-card" style="text-align: left; margin-top: 24px;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:8px;">
+                            <span data-en="Refund Disbursed" data-ja="デポジットの返還">Refund Disbursed</span>
+                            <span style="font-weight:600;">¥ 3,000</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.85rem; color: var(--text-apple-secondary);">
+                            <span data-en="Premium Incentive" data-ja="追加インセンティブボーナス">Premium Incentive</span>
+                            <span style="font-weight:600; color:var(--text-apple-main);">+ ¥ 500</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-apple" onclick="navigate('dashboard')">Share Summary</button>
+                </div>
+
+                <div id="screen-profile" class="screen">
+                    <div style="display:flex; align-items:center; gap:16px; margin-bottom:24px;">
+                        <div style="width:54px; height:54px; background:var(--secondary-bg-apple); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.5rem;"><i class="fas fa-user"></i></div>
+                        <div>
+                            <h3 style="font-size:1.05rem; font-weight:600;">Apple Minimalist</h3>
+                            <p style="font-size:0.8rem; color:var(--text-apple-secondary);">premium-user@icloud.com</p>
+                        </div>
+                    </div>
+
+                    <div class="apple-card" style="padding:0;">
+                        <div style="display:flex; justify-content:space-between; padding:14px; border-bottom:1px solid var(--secondary-bg-apple); font-size:0.9rem;">
+                            <span data-en="Weekly Strategy" data-ja="現在の週間目標">Weekly Strategy</span>
+                            <span style="color:var(--text-apple-secondary);">3 Clear Days</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding:14px; border-bottom:1px solid var(--secondary-bg-apple); font-size:0.9rem; cursor:pointer;" onclick="navigate('reminder')">
+                            <span data-en="Notifications" data-ja="通知とリマインダー">Notifications</span>
+                            <i class="fas fa-chevron-right" style="color:var(--border-apple); font-size:0.8rem;"></i>
+                        </div>
+                    </div>
+
+                    <button class="btn-apple-secondary" style="color: #ff3b30; margin-top:auto;" onclick="navigate('splash')" data-en="Log Out" data-ja="ログアウト">Log Out</button>
+
+                    <div class="app-nav-bar" style="margin-top:auto; margin-left:-24px; margin-right:-24px; margin-bottom:-24px;">
+                        <div class="app-nav-item" onclick="navigate('dashboard')"><i class="fas fa-house"></i><span data-en="Home" data-ja="ホーム">Home</span></div>
+                        <div class="app-nav-item" onclick="navigate('progress')"><i class="fas fa-chart-bar"></i><span data-en="Progress" data-ja="分析">Progress</span></div>
+                        <div class="app-nav-item center-plus" onclick="navigate('log')"><i class="fas fa-plus-circle"></i></div>
+                        <div class="app-nav-item" onclick="navigate('rewards')"><i class="fas fa-wallet"></i><span data-en="Rewards" data-ja="リワード">Rewards</span></div>
+                        <div class="app-nav-item active" onclick="navigate('profile')"><i class="fas fa-user"></i><span data-en="Profile" data-ja="マイページ">Profile</span></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="watch-notification" class="watch-overlay-container" onclick="toggleWatchOverlay()">
+                <div class="apple-watch-device">
+                    <div class="watch-top-icon"><i class="fas fa-apple-watch"></i></div>
+                    <div style="text-align:center; flex:1; display:flex; flex-direction:column; justify-content:center; gap:8px;">
+                        <div style="font-size: 0.75rem; color: #8e8e93; font-weight:600;">9:00 PM</div>
+                        <p style="font-size: 0.85rem; font-weight: 500; line-height:1.3;" data-en="Time for your alcohol-free check-in loop." data-ja="本日の休肝日の記録時間です。お酒を控えられましたか？">Time for your alcohol-free check-in loop.</p>
+                    </div>
+                    <div style="font-size: 0.75rem; font-weight:600; text-transform:uppercase; border-top:1px solid #2c2c2e; width:100%; text-align:center; padding-top:8px;" data-en="Dismiss" data-ja="了解">Dismiss</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let currentLang = 'en';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('btn-lang-en').classList.toggle('active', lang === 'en');
+            document.getElementById('btn-lang-ja').classList.toggle('active', lang === 'ja');
+            
+            const elements = document.querySelectorAll('[data-en]');
+            elements.forEach(el => {
+                if (lang === 'en') {
+                    el.innerHTML = el.getAttribute('data-en');
+                } else {
+                    el.innerHTML = el.getAttribute('data-ja');
+                }
+            });
+        }
+
+        function navigate(screenId) {
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(s => s.classList.remove('active'));
+
+            const target = document.getElementById('screen-' + screenId);
+            if (target) {
+                target.classList.add('active');
+            }
+
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            const matchedBtn = document.getElementById('sidebar-btn-' + screenId);
+            if (matchedBtn) {
+                matchedBtn.classList.add('active');
+            }
+        }
+
+        function switchScreen(screenId, btn) {
+            navigate(screenId);
+        }
+
+        function adjustGoalCount(offset) {
+            const el = document.getElementById('current-goal-num');
+            let val = parseInt(el.innerText) + offset;
+            if (val >= 1 && val <= 7) {
+                el.innerText = val;
+            }
+        }
+
+        function changeDepositAmount(amt) {
+            document.getElementById('deposit-display-val').innerText = amt.toLocaleString();
+            const chips = document.querySelectorAll('.apple-chip');
+            chips.forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function setLogStatus(didDrink) {
+            document.getElementById('log-yes').classList.toggle('active', didDrink);
+            document.getElementById('log-no').classList.toggle('active', !didDrink);
+        }
+
+        function toggleWatchOverlay() {
+            const overlay = document.getElementById('watch-notification');
+            if (overlay.style.display === 'flex') {
+                overlay.style.display = 'none';
+            } else {
+                overlay.style.display = 'flex';
+            }
+        }
+
+        function updateClock() {
+            const now = new Date();
+            let h = now.getHours().toString().padStart(2, '0');
+            let m = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('live-time').innerText = h + ':' + m;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        setLanguage('en');
+    </script>
+</body>
+</html>
